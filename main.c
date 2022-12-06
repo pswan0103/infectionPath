@@ -46,32 +46,23 @@ int main(int argc, const char * argv[]) {
     
     
     //1-2. loading each patient informations
-    //ifctele_genElement(, , , , );
     
     fp = fopen("patientInfo_sample.txt", "r");
     int i;
-    while (3 == fscanf(fp, "%d %d %d", pIndex, age, time))
+    
+    while (3 == fscanf(fp, "%i %i %i", &pIndex, &age, &time))
     {
     	for(i=0; i<5; i++)
-    		fscanf(fp, "%d", placeHist[i]);
+ 		fscanf(fp, "%s", &placeHist[i]);
+ 		
+ 		ifct_element = ifctele_genElement(pIndex, age, time, placeHist[i]);
+ 		ifctdb_addTail(ifct_element);
 	}
+
+	
     //1-3. FILE pointer close
     fclose(fp);
     
-    {
-    	int place1, place2;
-    	
-    	place1 = 3;
-    	place2 = 15;
-    	
-    	printf("The first place is %s", ifctele_getPlaceName(place1));
-    	printf("The second place is %s", ifctele_getPlaceName(place2));
-	}
-	
-	printf("%i번째 환자 감염 경로: ", pIndex);
-	for (i=0; i<5; i++)
-		printf("%s", ifctele_getPlaceName(placeHist[i]));
-	printf("\n");
 	
     do {
         printf("\n=============== INFECTION PATH MANAGEMENT PROGRAM (No. of patients : %i) =============\n", ifctdb_len());
@@ -86,6 +77,7 @@ int main(int argc, const char * argv[]) {
         scanf("%d", &menu_selection);
         fflush(stdin);
         
+        
         switch(menu_selection)
         {
             case MENU_EXIT:
@@ -94,8 +86,11 @@ int main(int argc, const char * argv[]) {
                 
             case MENU_PATIENT:
             	//ifct_element 포인터 이용
-                printf("age: %i\n", ifctele_getAge(ifct_element)); 
-                break; 
+            	//환자 번호 선택 후 번호, 나이, 감염 확인일자, 최근 5개 이동장소 출력 
+				printf("selet a patient index(0~4): ");
+				scanf("%i", ifct_element);
+				ifctele_printElement(ifct_element);
+                break;
                 
             case MENU_PLACE:
                 
