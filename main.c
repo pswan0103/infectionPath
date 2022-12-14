@@ -52,20 +52,21 @@ int main(int argc, const char * argv[]) {
     
     while (3 == fscanf(fp, "%i %i %i", &pIndex, &age, &time))
     {
-    	for(i=0; i<5; i++)
- 		fscanf(fp, "%s", &placeHist[i]);
- 		
- 		ifct_element = ifctele_genElement(pIndex, age, time, placeHist[i]);
+    	for(i=0; i<5; i++){
+ 			fscanf(fp, "%i", &placeHist[i]);
+ 		}
+		
+ 		ifct_element = ifctele_genElement(pIndex, age, time, placeHist);
  		ifctdb_addTail(ifct_element);
 	}
-
+	
 	
     //1-3. FILE pointer close
     fclose(fp);
     
-	
+	  
     do {
-        printf("\n=============== INFECTION PATH MANAGEMENT PROGRAM (No. of patients : %i) =============\n", ifctdb_len());
+        printf("\n\n=============== INFECTION PATH MANAGEMENT PROGRAM (No. of patients : %i) =============\n", ifctdb_len());
         printf("1. Print details about a patient.\n");                      //MENU_PATIENT
         printf("2. Print list of patients infected at a place.\n");        //MENU_PLACE
         printf("3. Print list of patients in a range of age.\n");          //MENU_AGE
@@ -77,6 +78,7 @@ int main(int argc, const char * argv[]) {
         scanf("%d", &menu_selection);
         fflush(stdin);
         
+        int sel;
         
         switch(menu_selection)
         {
@@ -87,9 +89,20 @@ int main(int argc, const char * argv[]) {
             case MENU_PATIENT:
             	//ifct_element 포인터 이용
             	//환자 번호 선택 후 번호, 나이, 감염 확인일자, 최근 5개 이동장소 출력 
-				printf("selet a patient index(0~4): ");
-				scanf("%i", ifct_element);
-				ifctele_printElement(ifct_element);
+            	printf("Selet a patient index(0~4): ");
+				scanf("%i", &sel);
+				printf("\n");
+					
+				if (sel > (ifctdb_len()-1) || sel < 0) {
+					printf("[ERROR] Wrong index selection! (%i), please choose between 0 ~ 4\n", sel);
+				}
+				
+				else {
+					ifct_element = ifctdb_getData(sel);
+					printf("\n%ith patient information\n\n", sel);
+					ifctele_printElement(ifct_element);
+				}
+				
                 break;
                 
             case MENU_PLACE:

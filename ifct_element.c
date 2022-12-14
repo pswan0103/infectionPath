@@ -107,49 +107,56 @@ typedef struct ifcs_ele {
 	int pIndex;			//번호: 정수
 	int age;			//나이: 정수 
 	int time;			//감염 시점: 정수 
-	place_t placeHist[N_HISTORY];	//감염 직전 이동 경로: enum 배열 [N_HISTORY] -> place_t[]
+	place_t placeHist[N_HISTORY];	//감염 직전 이동 경로: enum 배열
 } ifcs_ele_t;
 
-
-/*
-배열 이용 
-//static ifcs_ele_t ifcsarr[20]; //환자 정보 구조체 실체 
-//static int ifcs_cnt; //실제 환자 수
-*/
 
 void* ifctele_genElement(int index, int age, unsigned int detected_time, int history_place[N_HISTORY])
 { 
 	ifcs_ele_t* ptr;
-	//ptr = malloc(); 
 	
-	//ptr->index = index;
+	ptr = (ifcs_ele_t*)malloc(5*sizeof(ifcs_ele_t*)); 
 	
+	ptr->pIndex = index;
+	ptr->age = age;
+	ptr->time = detected_time;
+	ptr->placeHist[N_HISTORY] = history_place[N_HISTORY];	//ptr이 장소 경로 가리킴 
+
 	return ptr;
 }
 
 
 int ifctele_getHistPlaceIndex(void* obj, int index) {
-	ifcs_ele_t *Ptr = (ifcs_ele_t *)obj;
-	return (Ptr->placeHist[index]);
+	ifcs_ele_t *ptr = (ifcs_ele_t *)obj;
+	return (ptr->placeHist[index]);
 }
 
 unsigned int ifctele_getinfestedTime(void* obj) {
-	ifcs_ele_t *Ptr = (ifcs_ele_t *)obj;
-	return (Ptr->time);
+	ifcs_ele_t *ptr = (ifcs_ele_t *)obj;
+	return (ptr->time);
 }
 
 int ifctele_getAge(void* obj) {
-	ifcs_ele_t *Ptr = (ifcs_ele_t *)obj;
-	return (Ptr->age); 
+	ifcs_ele_t *ptr = (ifcs_ele_t *)obj;
+	return (ptr->age); 
 }
 
 void ifctele_printElement(void* obj) {
-	ifcs_ele_t *Ptr = (ifcs_ele_t *)obj;
-	
+	ifcs_ele_t *ptr = (ifcs_ele_t *)obj;
+
 	//print elements
-	printf("Age: %i", Ptr->age); 
-    printf("time: %i", Ptr->time);
-    printf("History: %s -> ", Ptr->placeHist);
+	printf("index: %i\n", ptr->pIndex);
+	printf("Age: %i\n", ptr->age); 
+    printf("time: %i\n", ptr->time);
+    printf("History: ");
+    
+//    int i;
+//    for(i=0; i<N_HISTORY; i++)
+//		ptr->placeHist[i] = ifctele_getplaceName(ptr->placeHist[i]);
+//	
+//	for(i=0; i<N_HISTORY; i++)
+//		printf("%s ", ptr->placeHist[i]);
+		
 }
 
 
