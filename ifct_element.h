@@ -5,6 +5,7 @@
 //  Created by Juyeop Kim on 2022/10/20.
 //
 
+
 #ifndef ifct_element_h
 #define ifct_element_h
 
@@ -18,4 +19,4 @@ int ifctele_getHistPlaceIndex(void* obj, int index);
 unsigned int ifctele_getinfestedTime(void* obj);
 int ifctele_getAge(void* obj);
 void ifctele_printElement(void* obj);
-#endif /* ifct_element_h */
+#endif /* ifct_element_h *//

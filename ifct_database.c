@@ -3,7 +3,8 @@
 //  Infection Path
 //  Database platform code for storing infest path elements
 //  Created by Juyeop Kim on 2022/10/20.
-//
+///
+
 
 #include <stdio.h>
 #include <stdlib.h>
