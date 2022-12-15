@@ -52,11 +52,10 @@ int main(int argc, const char * argv[]) {
     
     while (3 == fscanf(fp, "%i %i %i", &pIndex, &age, &time))
     {
-    	for(i=0; i<5; i++){
+    	for(i=0; i<5; i++)
  			fscanf(fp, "%i", &placeHist[i]);
- 		}
-		
- 		ifct_element = ifctele_genElement(pIndex, age, time, placeHist);
+ 			
+		ifct_element = ifctele_genElement(pIndex, age, time, placeHist);
  		ifctdb_addTail(ifct_element);
 	}
 	

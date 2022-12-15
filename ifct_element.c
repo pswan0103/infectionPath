@@ -120,7 +120,10 @@ void* ifctele_genElement(int index, int age, unsigned int detected_time, int his
 	ptr->pIndex = index;
 	ptr->age = age;
 	ptr->time = detected_time;
-	ptr->placeHist[N_HISTORY] = history_place[N_HISTORY];	//ptr이 장소 경로 가리킴 
+	
+	int i;
+	for(i=0; i<N_HISTORY; i++)
+		ptr->placeHist[i] = history_place[i];
 
 	return ptr;
 }
@@ -150,14 +153,15 @@ void ifctele_printElement(void* obj) {
     printf("time: %i\n", ptr->time);
     printf("History: ");
     
-//    int i;
-//    for(i=0; i<N_HISTORY; i++)
-//		ptr->placeHist[i] = ifctele_getplaceName(ptr->placeHist[i]);
-//	
-//	for(i=0; i<N_HISTORY; i++)
-//		printf("%s ", ptr->placeHist[i]);
-		
+    int i;
+    for(i=0; i<N_HISTORY; i++)
+		printf("%s ", ifctele_getPlaceName(ptr->placeHist[i]));
+	
+	printf("\n");
+	
 }
+
+
 
 
 unsigned int ifctele_getinfestedTime(void* obj);
