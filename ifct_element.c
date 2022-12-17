@@ -126,7 +126,7 @@ void* ifctele_genElement(int index, int age, unsigned int detected_time, int his
 		ptr->placeHist[i] = history_place[i];
 
 	return ptr;
-}
+}  
 
 
 int ifctele_getHistPlaceIndex(void* obj, int index) {
@@ -160,9 +160,6 @@ void ifctele_printElement(void* obj) {
 	printf("\n");
 	
 }
-
-
-
 
 unsigned int ifctele_getinfestedTime(void* obj);
 

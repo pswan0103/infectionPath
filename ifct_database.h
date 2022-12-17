@@ -3,7 +3,7 @@
 //  infection Path
 //
 //  Created by Juyeop Kim on 2022/10/20.
-///
+//
 
 #ifndef ifct_database_h
 #define ifct_database_h

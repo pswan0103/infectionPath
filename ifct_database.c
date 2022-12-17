@@ -224,3 +224,4 @@ void* ifctdb_getData(int index)
     
     return obj;
 }
+

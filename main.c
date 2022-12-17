@@ -77,7 +77,10 @@ int main(int argc, const char * argv[]) {
         scanf("%d", &menu_selection);
         fflush(stdin);
         
-        int sel;
+        int sel;										//1번 메뉴: 환자 번호 입력 
+        int maxAge, minAge;								//3번 메뉴: 나이 최대, 최소 입력 
+        char sel_place[MAX_PLACENAME];					//2번 메뉴: 장소 입력 
+        
         
         switch(menu_selection)
         {
@@ -86,16 +89,16 @@ int main(int argc, const char * argv[]) {
                 break;
                 
             case MENU_PATIENT:
-            	//ifct_element 포인터 이용
-            	//환자 번호 선택 후 번호, 나이, 감염 확인일자, 최근 5개 이동장소 출력 
-            	printf("Selet a patient index(0~4): ");
+            	//환자 번호 선택 후 번호, 나이, 감염 확인일자, 최근 5개 이동장소 출력
+				 
+            	printf("Selet a patient index(0~%i): ", ifctdb_len()-1);
 				scanf("%i", &sel);
 				printf("\n");
 					
 				if (sel > (ifctdb_len()-1) || sel < 0) {
-					printf("[ERROR] Wrong index selection! (%i), please choose between 0 ~ 4\n", sel);
+					printf("[ERROR] Wrong index selection! (%i), please choose between 0 ~ %i\n", sel, ifctdb_len()-1);
 				}
-				
+				 
 				else {
 					ifct_element = ifctdb_getData(sel);
 					printf("\n%ith patient information\n\n", sel);
@@ -105,11 +108,41 @@ int main(int argc, const char * argv[]) {
                 break;
                 
             case MENU_PLACE:
-                
+            	
+                printf("Enter the place of infection: "); //감염 장소 선택 
+                scanf("%s", &sel_place);
+				
+				int i, j;
+                for(i=0; i<ifctdb_len(); i++) {
+                	ifct_element = ifctdb_getData(i);
+                	
+                	for (j=0; j<N_HISTORY; j++) {
+                		int placeIndex[N_HISTORY];
+                		placeIndex[j] = ifctele_getHistPlaceIndex(ifct_element, j);
+                		
+                		if (strcmp(ifctele_getPlaceName(placeIndex[j]), sel_place) == 0) {
+                			printf("\n\n");
+                			ifctele_printElement(ifct_element);
+              			}
+                	}
+				}
+				
                 break;
                 
             case MENU_AGE:
-                
+            	
+            	printf("Enter the range of patient age(min~max): "); 
+            	scanf("%i~%i", &minAge, &maxAge);
+            
+            	for (i=0; i<ifctdb_len(); i++) {
+            		ifct_element = ifctdb_getData(i);
+            		
+            		if (minAge <= ifctele_getAge(ifct_element) && ifctele_getAge(ifct_element) <= maxAge) {
+            			printf("\n\n");
+            			ifctele_printElement(ifct_element);
+            		}
+				}
+
                 break;
                 
             case MENU_TRACK:
@@ -122,7 +155,6 @@ int main(int argc, const char * argv[]) {
         }
     
     } while(menu_selection != 0);
-    
     
     return 0;
 }
