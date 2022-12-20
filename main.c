@@ -20,6 +20,9 @@
 
 
 int trackInfester(int patient_no, int *detected_time, int *place);
+int isMet(int patient_no, int met_patient_no); 
+int convertTimeToIndex(int time, int infestedTime);
+
 int main(int argc, const char * argv[]) {
     
     int menu_selection;
@@ -47,7 +50,7 @@ int main(int argc, const char * argv[]) {
     
     //1-2. loading each patient informations
     
-    fp = fopen("patientInfo_sample.txt", "r");
+    fp = fopen("patientInfo_prb2.txt", "r");
     int i;
     
     while (3 == fscanf(fp, "%i %i %i", &pIndex, &age, &time))
@@ -77,9 +80,9 @@ int main(int argc, const char * argv[]) {
         scanf("%d", &menu_selection);
         fflush(stdin);
         
-        int sel;										//1번 메뉴: 환자 번호 입력 
-        int maxAge, minAge;								//3번 메뉴: 나이 최대, 최소 입력 
-        char sel_place[MAX_PLACENAME];					//2번 메뉴: 장소 입력 
+        int sel;										//1번, 4번 메뉴 환자 번호 
+        int maxAge, minAge;								//3번 메뉴 나이 최대 최소 
+        char sel_place[MAX_PLACENAME];					//2번 메뉴 장소 선택 
         
         
         switch(menu_selection)
@@ -89,19 +92,19 @@ int main(int argc, const char * argv[]) {
                 break;
                 
             case MENU_PATIENT:
-            	//환자 번호 선택 후 번호, 나이, 감염 확인일자, 최근 5개 이동장소 출력
+            	//환자 번호 입력받고 정보 출력 
 				 
-            	printf("Selet a patient index(0~%i): ", ifctdb_len()-1);
+            	printf("Select a patient index(0~%i): ", ifctdb_len()-1);
 				scanf("%i", &sel);
 				printf("\n");
 					
-				if (sel > (ifctdb_len()-1) || sel < 0) {
+				if (sel > (ifctdb_len()-1) || sel < 0) {		//환자 번호 입력 오류시 
 					printf("[ERROR] Wrong index selection! (%i), please choose between 0 ~ %i\n", sel, ifctdb_len()-1);
 				}
 				 
 				else {
 					ifct_element = ifctdb_getData(sel);
-					printf("\n%ith patient information\n\n", sel);
+					printf("\n%ith patient's information\n\n", sel);
 					ifctele_printElement(ifct_element);
 				}
 				
@@ -109,7 +112,7 @@ int main(int argc, const char * argv[]) {
                 
             case MENU_PLACE:
             	
-                printf("Enter the place of infection: "); //감염 장소 선택 
+                printf("Enter the place of infection: "); 
                 scanf("%s", &sel_place);
 				
 				int i, j;
@@ -146,7 +149,35 @@ int main(int argc, const char * argv[]) {
                 break;
                 
             case MENU_TRACK:
+            	printf("Select a patient to track(0~%i): ", ifctdb_len()-1);
+            	scanf("%i", &sel);
+            	printf("\n");
+				
+				ifct_element = ifctdb_getData(sel);
+				
+				if (sel > (ifctdb_len()-1) || sel < 0) {
+					printf("[ERROR] Wrong index selection! (%i), please choose between 0 ~ %i\n", sel, ifctdb_len()-1);
+				}
+				
+                else 
+				{
+                    int patient = sel;
+                    int contg_patient;
                     
+					while (patient >= 0)
+					{
+						int detectedTime = ifctele_getinfestedTime(ifct_element);
+						int detectedPlace = ifctele_getHistPlaceIndex(ifct_element, N_HISTORY);
+						contg_patient = trackInfester(patient, detectedTime, detectedPlace);
+						
+						if (contg_patient >= 0)
+							printf("%i 환자는 %i 환자에게 전파됨\n", patient, contg_patient);
+						
+						else
+							contg_patient = patient;
+					}
+				}
+                
                 break;
                 
             default:
@@ -158,3 +189,65 @@ int main(int argc, const char * argv[]) {
     
     return 0;
 }
+
+int trackInfester(int patient_no, int *detected_time, int *place)
+{
+	int cog_patient_no;
+	int j;
+	for(j=0; j<ifctdb_len(); j++) 
+	{
+		int met_patient_no[ifctdb_len()];
+		int mettime[ifctdb_len()];
+		
+		mettime[j] = isMet(patient_no, met_patient_no[j]);
+		
+		if (mettime[j] > 0)
+		{
+			if (mettime[j] < mettime[j-1])
+			{
+				cog_patient_no = j;
+			}
+		}
+	}
+	
+	return cog_patient_no;
+}
+
+int isMet(int patient_no, int met_patient_no)
+{
+	void* ifct_element;
+	ifct_element = ifctdb_getData(patient_no);
+	
+	int infestedtime = ifctele_getinfestedTime(ifct_element);	//감염 확인 시간 
+	int placetime[3];											//i번째 이동장소 시점
+	int placeIndex[3];										//i번째 이동장소 인덱스 
+	int mettime;
+	
+	int j;
+	for (j=2; j<N_HISTORY; j++)
+	{
+		placetime[j] = infestedtime - N_HISTORY + j;
+		placeIndex[j] = convertTimeToIndex(placetime[j], infestedtime);
+		
+		void* ifct_element_met;
+		ifct_element_met = ifctdb_getData(met_patient_no);
+		
+		if (ifctele_getHistPlaceIndex(ifct_element, placeIndex[j]) == ifctele_getHistPlaceIndex(ifct_element_met, placeIndex[j]))
+			mettime = placetime[j];
+	}
+	 
+	return mettime;
+}
+
+int convertTimeToIndex(int time, int infestedTime)
+{
+	int index = -1;
+	
+	if (time <= infestedTime && time > infestedTime-N_HISTORY)
+	{
+		index = N_HISTORY-(infestedTime - time)-1;
+	}
+	
+	return index;
+}
+

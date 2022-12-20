@@ -104,10 +104,10 @@ char* ifctele_getPlaceName(int placeIndex)
 }
 
 typedef struct ifcs_ele {
-	int pIndex;			//번호: 정수
-	int age;			//나이: 정수 
-	int time;			//감염 시점: 정수 
-	place_t placeHist[N_HISTORY];	//감염 직전 이동 경로: enum 배열
+	int pIndex;			
+	int age;			
+	int time;			 
+	place_t placeHist[N_HISTORY];
 } ifcs_ele_t;
 
 
@@ -161,6 +161,6 @@ void ifctele_printElement(void* obj) {
 	
 }
 
-unsigned int ifctele_getinfestedTime(void* obj);
+
 
 
